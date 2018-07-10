@@ -1,0 +1,46 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "com.gradle.publish:plugin-publish-plugin:0.9.8"
+    }
+}
+
+plugins {
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+    id 'org.jetbrains.kotlin.jvm' version '1.1.51'
+}
+
+group = 'com.github.h0tk3y.kotlin.repl'
+version = '1.0-SNAPSHOT'
+
+apply plugin: "com.gradle.plugin-publish"
+
+repositories {
+    jcenter()
+    mavenLocal()
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    it.kotlinOptions.jvmTarget = "1.8"
+}
+
+dependencies {
+    ext.kotlin_version = '1.1.51'
+    compile gradleApi()
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compileOnly "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+}
+
+gradlePlugin {
+    plugins {
+        simplePlugin {
+            id = "com.github.h0tk3y.kotlin.repl"
+            implementationClass = "com.github.h0tk3y.kotlin.repl.KotlinReplPlugin"
+        }
+    }
+}
